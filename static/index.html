@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Crawl and Summarize</title>
+  <script crossorigin src="https://unpkg.com/react@17/umd/react.development.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+  <script crossorigin src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 2rem; }
+    input { width: 100%; padding: 0.5rem; margin-bottom: 1rem; }
+    button { padding: 0.5rem 1rem; }
+    pre { white-space: pre-wrap; }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="text/babel">
+function App() {
+  const [url, setUrl] = React.useState('');
+  const [summary, setSummary] = React.useState('');
+  const [loading, setLoading] = React.useState(false);
+  const [error, setError] = React.useState(null);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+    setSummary('');
+    try {
+      const resp = await fetch('/api/summarize', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({url}),
+      });
+      const data = await resp.json();
+      if (!resp.ok) {
+        throw new Error(data.error || 'Failed to summarize');
+      }
+      setSummary(data.summary);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div>
+      <h1>Crawl and Summarize</h1>
+      <form onSubmit={handleSubmit}>
+        <input
+          type="text"
+          placeholder="Enter URL..."
+          value={url}
+          onChange={(e) => setUrl(e.target.value)}
+        />
+        <button type="submit" disabled={loading}>Summarize</button>
+      </form>
+      {error && <p style={{color:'red'}}>{error}</p>}
+      {summary && <pre>{summary}</pre>}
+    </div>
+  );
+}
+
+ReactDOM.render(<App />, document.getElementById('root'));
+  </script>
+</body>
+</html>

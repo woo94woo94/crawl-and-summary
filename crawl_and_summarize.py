@@ -50,14 +50,18 @@ def summarize(text: str, sentences: int = 3) -> str:
     return " ".join(sentence_list[:sentences]).strip()
 
 
-def main(url: str):
+def summarize_url(url: str, sentences: int = 3) -> str:
+    """Fetch the URL and return a short summary."""
     html = fetch_url(url)
     cleaned = clean_html(html)
     text = extract_text(cleaned)
     if not text:
-        print("No text found on the page.")
-        return
-    summary = summarize(text)
+        return "No text found on the page."
+    return summarize(text, sentences)
+
+
+def main(url: str):
+    summary = summarize_url(url)
     print(summary)
 
 
