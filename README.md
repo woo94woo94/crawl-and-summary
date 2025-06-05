@@ -26,3 +26,4 @@ python app.py
 ```
 
 Open [http://localhost:5000](http://localhost:5000) in your browser and enter a URL to generate a summary.
+

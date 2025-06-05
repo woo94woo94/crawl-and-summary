@@ -50,8 +50,11 @@ def summarize(text: str, sentences: int = 3) -> str:
     return " ".join(sentence_list[:sentences]).strip()
 
 
+
 def summarize_url(url: str, sentences: int = 3) -> str:
     """Fetch the URL and return a short summary."""
+
+def main(url: str):
     html = fetch_url(url)
     cleaned = clean_html(html)
     text = extract_text(cleaned)
