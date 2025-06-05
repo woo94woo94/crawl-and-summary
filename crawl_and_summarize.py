@@ -12,11 +12,11 @@ class ParagraphParser(HTMLParser):
         self.text_parts = []
 
     def handle_starttag(self, tag, attrs):
-        if tag.lower() == "p":
+        if tag.lower() in {"p", "title", "h1", "h2"}:
             self.record = True
 
     def handle_endtag(self, tag):
-        if tag.lower() == "p" and self.record:
+        if tag.lower() in {"p", "title", "h1", "h2"} and self.record:
             self.record = False
             self.text_parts.append("\n")
 
@@ -28,14 +28,18 @@ class ParagraphParser(HTMLParser):
 
 
 def fetch_url(url: str) -> str:
-    with urllib.request.urlopen(url) as response:
+    """Retrieve the URL and return its body as text."""
+    req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
+    with urllib.request.urlopen(req) as response:
         charset = response.headers.get_content_charset() or "utf-8"
         return response.read().decode(charset, errors="replace")
 
 
 def clean_html(html: str) -> str:
+    """Remove scripts/styles and collapse whitespace."""
     html = re.sub(r"<script.*?>.*?</script>", "", html, flags=re.DOTALL | re.IGNORECASE)
     html = re.sub(r"<style.*?>.*?</style>", "", html, flags=re.DOTALL | re.IGNORECASE)
+    html = re.sub(r"\s+", " ", html)
     return html
 
 
@@ -50,7 +54,10 @@ def summarize(text: str, sentences: int = 3) -> str:
     return " ".join(sentence_list[:sentences]).strip()
 
 
-
+    try:
+        html = fetch_url(url)
+    except Exception as exc:
+        return f"Failed to fetch URL: {exc}"
 def summarize_url(url: str, sentences: int = 3) -> str:
     """Fetch the URL and return a short summary."""
 

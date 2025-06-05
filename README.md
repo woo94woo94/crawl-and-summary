@@ -12,7 +12,7 @@ The summarizer itself relies only on the Python standard library. Running the op
 python crawl_and_summarize.py <URL>
 ```
 
-The script downloads the specified URL, extracts text from `<p>` tags, and prints the first few sentences.
+The script downloads the specified URL, extracts text from the title and paragraphs, and prints the first few sentences. A browser-like `User-Agent` header is sent to avoid simple blocks.
 
 > **Note**: Internet access is required for the script to fetch external pages. On systems without internet connectivity the script will fail to retrieve the content.
 
