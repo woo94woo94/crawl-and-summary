@@ -84,8 +84,8 @@ def summarize(text: str, sentences: int = 3) -> str:
     # Fallback basic summarization
     sentence_list = re.split(r"(?<=[.!?])\s+", text)
     return " ".join(sentence_list[:sentences]).strip()
-
-
+  
+  
 def summarize_url(url: str, sentences: int = 3) -> str:
     """Fetch the URL and return a short summary."""
     try:
